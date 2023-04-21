@@ -1,21 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "xdrfile.h"
+#include "xdrfile.h"				//ÊöÇ‰∏çÂºÄÊ∫êÊ≠§Â∫ì
 
 #include <math.h>
-#define UTUBE 10.224  //cntµ◊  GO-Right-x
-#define BTUBE 10.086      //cnt∂•   GO-Left-x
-#define RTUBE 0.401          //cnt∞Îæ∂£®Ãºƒ…√◊π‹∞Îæ∂£©
-#define NOSOL 3936         //»‹÷  ˝
-#define TOTAL 22518      //◊‹ ˝
-#define XBOX 6.39        //∫–◊”µƒx÷·≥§∂»    
-#define YBOX 6.60			//∫–◊”µƒy÷·≥§∂» 
-#define ZBOX  3.00			//∫–◊”µƒz÷·≥§∂» 
-#define steplength 300		//z÷·∑ΩœÚ…œπ≤∑÷Œ™∂‡…Ÿ≤Ω 
-#define accuracy 0.01		//z÷·∑ΩœÚ…œ√ø“ª≤Ωµƒæ´∂» 
-#define Cnum 1620			//C‘≠◊”µƒ ˝¡ø 
-#define H2Onum 3461	//ÀÆ∑÷◊”µƒ ˝¡ø 
-#define ionnum 89			//“ÚŒ™Na¿Î◊”∫ÕCl¿Î◊”µƒ ˝¡øœ‡µ»£¨À˘“‘Õ≥≥∆Œ™¿Î◊” ˝¡ø 
+#define UTUBE 10.224  //cntÂ∫ï  
+#define BTUBE 10.086      //cntÈ°∂   
+#define NOSOL 3936         //Ê∫∂Ë¥®Êï∞
+#define TOTAL 22518      //ÊÄªÊï∞
+#define XBOX 6.39        //ÁõíÂ≠êÁöÑxËΩ¥ÈïøÂ∫¶    
+#define YBOX 6.60			//ÁõíÂ≠êÁöÑyËΩ¥ÈïøÂ∫¶ 
+#define ZBOX  3.00			//ÁõíÂ≠êÁöÑzËΩ¥ÈïøÂ∫¶ 
+#define steplength 300		//zËΩ¥ÊñπÂêë‰∏äÂÖ±ÂàÜ‰∏∫Â§öÂ∞ëÊ≠• 
+#define accuracy 0.01		//zËΩ¥ÊñπÂêë‰∏äÊØè‰∏ÄÊ≠•ÁöÑÁ≤æÂ∫¶ 
+#define Cnum 1620			//CÂéüÂ≠êÁöÑÊï∞Èáè 
+#define H2Onum 3461	//Ê∞¥ÂàÜÂ≠êÁöÑÊï∞Èáè 
+#define ionnum 89			//Âõ†‰∏∫NaÁ¶ªÂ≠êÂíåClÁ¶ªÂ≠êÁöÑÊï∞ÈáèÁõ∏Á≠âÔºåÊâÄ‰ª•ÁªüÁß∞‰∏∫Á¶ªÂ≠êÊï∞Èáè 
 
 
 int natoms, step,natom,read_return;
@@ -32,7 +31,7 @@ float pbcr(int a,int b)
 	float X,Y,Z,R;
  	X=x[a][0]-x[b][0];
   	if(X>XBOX/2)X=X-XBOX;
-  	if(X<-XBOX/2)X=X+XBOX;    //÷‹∆⁄–‘±ﬂΩÁÃıº˛
+  	if(X<-XBOX/2)X=X+XBOX;    //Âë®ÊúüÊÄßËæπÁïåÊù°‰ª∂
   	Y=x[a][1]-x[b][1];
   	if(Y>YBOX/2)Y=Y-YBOX;
   	if(Y<-YBOX/2)Y=Y+YBOX;
@@ -40,13 +39,13 @@ float pbcr(int a,int b)
   	if(Z>ZBOX/2)Z=Z-ZBOX;
   	if(Z<-ZBOX/2)Z=Z+ZBOX;
   	R=sqrt(X*X+Y*Y+Z*Z);
-  	return R;                  //∑µªÿæ‡¿Î
+  	return R;                  //ËøîÂõûË∑ùÁ¶ª
 }
 
 main ()
 {
 
-	ff=fopen("md_regra2ion.txt","w");  	          //–¥f.datŒƒº˛
+	ff=fopen("md_regra2ion.txt","w");  	          //ÂÜôf.datÊñá‰ª∂
 	xtc=xdrfile_open ("md_regra2ion.xtc","r");
    	read_xtc_natoms ("md_regra2ion.xtc",&natoms);
  	x=calloc(natoms, sizeof (x[0]));
@@ -59,10 +58,10 @@ main ()
 	read_return=read_xtc(xtc,natoms,&step,&time,box,x,&prec);
 	
 	printf ("%d\n",step);
-	                                       //¥”trrŒƒº˛÷–∂¡»°“ª∏ˆstep time µƒnatoms∏ˆ‘≠◊”µƒ◊¯±Í£¨œ»∏¯ox£¨ox æÕ±Ì æ«∞“ª∏ˆ‘≠◊”
+	                                       //‰ªétrrÊñá‰ª∂‰∏≠ËØªÂèñ‰∏Ä‰∏™step time ÁöÑnatoms‰∏™ÂéüÂ≠êÁöÑÂùêÊ†áÔºåÂÖàÁªôoxÔºåox Â∞±Ë°®Á§∫Ââç‰∏Ä‰∏™ÂéüÂ≠ê
 	while (1)
 	{
-	 	read_return=read_xtc (xtc,natoms,&step,&time,box,x,&prec); //’‚“ª¥Œ∂¡»°µƒ ±∫ÚæÕ±Ì æœ¬“ª∏ˆ‘≠◊”£¨∏¯X
+	 	read_return=read_xtc (xtc,natoms,&step,&time,box,x,&prec); //Ëøô‰∏ÄÊ¨°ËØªÂèñÁöÑÊó∂ÂÄôÂ∞±Ë°®Á§∫‰∏ã‰∏Ä‰∏™ÂéüÂ≠êÔºåÁªôX
 	  	if (read_return!=0) break;
 	  	if(step%1000000==0)printf ("%d %f\n",step,time);
 
@@ -119,5 +118,4 @@ main ()
   		}	
  	}
 	fclose(ff);
-//count2[j]*23*10/(N*6.02214076*XBOX*YBOX*0.01),count2[j]*ions,count3[j]*35.5*10/(N*6.02214076*XBOX*YBOX*0.01),count3[j]*ions
 }
