@@ -1,0 +1,104 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+//#include <iostream>
+#include <math.h> 
+
+int main() {
+    int n;
+    float  f;
+    printf("\n    该程序可以建造碳原子个数不超过9000的石墨烯结构信息。\n    1620个原子的宽度为6.39nm，长度为6.642\n     3936个原子的宽度为10.224，长度为10.086\n");
+    printf("请输入所创建的石墨烯总原子数：");
+    scanf("%d", &n);
+    printf("请输入宽度（单位为nm，4个原子结构的宽度为0.426nm）：");
+    scanf("%f", &f);
+    int r[10000], l = 1;
+    float x[10000], y[10000];
+    int q = 1, z = 1;
+    float s1 = 0, s2 = 0, s3 = 0;
+    //char a = "LYS",A="C";
+    x[0] = 0; y[0] = 0.123;
+    for(int i = 0; i < n; i = i + 4) {
+        if (x[i] <= f) {
+            x[i + 1] = x[i] + 0.071;
+            x[i + 2] = x[i + 1] + 0.142;
+            x[i + 3] = x[i + 2] + 0.071;
+            x[i + 4] = x[i + 3] + 0.142;
+            y[i + 1] = 0.123 * (l - 1);
+            y[i + 2] = y[i + 1];
+            y[i + 3] = y[i + 2] + 0.123;
+            y[i + 4] = y[i + 3];
+        }
+        else {
+            l = l + 2;
+            x[i] = 0;
+            y[i] = 0.123 * l;
+            i = i - 4;
+        }
+    }
+    char filename[10];
+    printf("\n请输入gro文件名：");
+    scanf("%s", &filename);
+    FILE* file_p;
+    file_p = fopen(filename, "w");
+    //获取文件名
+    fgets(filename, 10, stdin);
+    //打开文件
+    if (file_p == NULL) {
+        printf("not open!!");
+        return 0;
+    }
+    fprintf(file_p, "graphane\n%d \n", n);
+    for (int j = 0; j < n; j++) {
+        r[j] = j + 1;
+        fprintf(file_p, "%5d GRA   C %5d %8.3f %8.3f %8.3f %8.4f %8.4f %8.4f\n", q, r[j], x[j], y[j], z, s1, s2, s3);
+    }
+    fprintf(file_p, "        %6.3f        %6.3f      10.000\n ", f, (l+1) * 0.123);
+    fclose(file_p);
+    
+    int C = n;
+    double mC = 12.01100, mH = 1.00800;
+    float    qC = 0.000, qH = 0.370;
+    //打开文件
+    printf("\n请输入itp文件名：");
+    scanf("%s", &filename);
+    FILE* files_p;
+    files_p = fopen(filename, "w");
+    //获取文件名
+    fgets(filename, 10, stdin);
+    //打开文件
+    if (files_p == NULL) {
+        printf("not open!!");
+        return 0;
+    }
+    //输入内容
+    fprintf(files_p,"[ moleculetype ]\n; name  nrexcl\nGRA     3\n\n");
+    fprintf(files_p, "[ atoms ]\n;  nr      type    resnr    residu   atom    cgnr        charge       mass\n");
+    for (int i = 0; i < n + f; i++) {
+        if (i < n) {
+            if (i < C) {
+                fprintf(files_p, "  %3d     opls_001    1       GRA      C      1       %.4f    %.4f\n", i + 1, qC,mC);
+            }
+        }
+    }
+    fprintf(files_p, "\n[ bonds ]\n;   ai    aj   funct\n");
+    for (int j = 0; j < n; j++) {
+        for (int i = 0; i < n; i++) {
+            if (sqrt(pow(x[j] - x[i], 2.0) + pow(y[j] - y[i], 2.0)) <= 0.143 && j < i) {
+                fprintf(files_p, "  %4d    %4d     1\n", r[j], r[i]);
+            }
+        }
+        fprintf(files_p, "");
+    }
+    fprintf(files_p, "\n[ angles ]\n;   ai    aj     ak   funct\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            for (int k = 0; k < n; k++) {
+                if (sqrt(pow(x[j] - x[i], 2.0) + pow(y[j] - y[i], 2.0)) <= 0.143 && sqrt(pow(x[k] - x[i], 2.0) + pow(y[k] - y[i], 2.0)) <= 0.143 && i != j && k != j && k != i && j < k) {
+                    fprintf(files_p, "  %4d    %4d     %4d    1\n", r[j], r[i], r[k]);
+                }
+            }
+        }
+    }
+    fclose(files_p);
+    return 0;
+}
